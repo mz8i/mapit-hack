@@ -43,7 +43,7 @@ html, body {
     z-index: 1000;
     background-color: white; 
     text-align: center;
-    /* display: none; */
+    display: none;
 }
 
 #map {
