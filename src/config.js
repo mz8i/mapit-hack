@@ -2,6 +2,14 @@
   const config = {};
   window.config = config;
 
+  config.allowedCategories = [
+    'snacks-fast-food',
+    'coffee-tea',
+    'natural-geographical',
+    'leisure-outdoor',
+    'sights-museums'
+  ];
+
   config.categories = {
     'snacks-fast-food': {
       name: 'Snacks & Fast Food',
@@ -36,6 +44,7 @@
 
   config.moveThreshold = 5; // in meters
   config.velocity = 1; // in meters per second
+  config.bigPoiSegments = 3;
 
   config.logEnabled = localStorage.getItem('log-enabled') === "true" || false;
   config.enableLog = () => localStorage.setItem('log-enabled', true);

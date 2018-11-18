@@ -74,6 +74,7 @@
 
     function initialiseExploration() {
         map.setFollowCurrentLocation(true);
+        routing.setArrivalTime(arrivalTime);
     }
 
     // cancelling current destination

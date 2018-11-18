@@ -1,10 +1,13 @@
 (function() {
   const routing = {
+    currentTime: 0,
     lastLocation: {
       lat: 0,
       lng: 0,
       heading: 0
     },
+    finalDestination: null,
+    arrivalTime: null,
   };
   window.routing = routing;
 
@@ -13,6 +16,63 @@
     routing.finalDestination = position;
     map.setFinalDestination(position);
   };
+
+  routing.setArrivalTime = time => {
+    logger.log(`ROUTING|setting arrival time to ${time}`);
+    routing.arrivalTime = time;
+
+    (async function() {
+      const route = await api.route(routing.lastLocation, routing.finalDestination);
+      logger.log(`ROUTING|routed [${routing.lastLocation.lat}, ${routing.lastLocation.lng}] to [${routing.lastLocation.lat}, ${routing.lastLocation.lng}]`, route);
+      map.setRoute(route.shape.map(point => {
+        const position = point.split(',');
+        return {
+          lat: position[0],
+          lng: position[1],
+        };
+      }));
+
+      const indexSegmentsLength = route.shape.length / (config.bigPoiSegments + 1);
+      const bigPois = [];
+      const bigPoisPositions = [];
+
+      let index = Math.floor(indexSegmentsLength);
+      while (index < route.shape.length) {
+        const position = route.shape[index].split(',');
+        const midpoint = {
+          lat: position[0],
+          lng: position[1],
+        };
+        
+        const pois = await api.pois(midpoint, 500, 'sights-museums,natural-geographical');
+        logger.log(`ROUTING|searched for big pois near [${midpoint.lat}, ${midpoint.lng}]`, pois);
+        const filteredPois = pois.filter(poi =>
+          (bigPoisPositions.indexOf(poi.position[0] + poi.position[1]) === -1) &&
+          (config.allowedCategories.indexOf(poi.category.id) > -1));
+        
+        let addedPois = 0;
+        while ((addedPois < 2) && (addedPois < filteredPois.length)) {
+          bigPois.push(filteredPois[addedPois]);
+          bigPoisPositions.push(filteredPois[addedPois].position[0] + filteredPois[addedPois].position[1]);
+          addedPois += 1;
+        }
+
+        index = Math.floor(index + indexSegmentsLength);
+      }
+
+      const parsedBigPois = bigPois.map(bigPoi => ({
+        position: {
+          lat: bigPoi.position[0],
+          lng: bigPoi.position[1],
+        },
+        category: bigPoi.category.id,
+        name: bigPoi.title,
+      }));
+
+      logger.log(`ROUTING|setting big pois`, parsedBigPois);
+      map.setBigPois(parsedBigPois);
+    })();
+  }
 
   routing.onCurrentLocationChange = position => {
     const distance = distanceInMeters(position, routing.lastLocation);
