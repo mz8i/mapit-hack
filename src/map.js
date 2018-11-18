@@ -32,12 +32,20 @@
     let finalDestinationGroup = null;
     let routeGroup = null;
 
+    let currentDestination = null;
+
+    function getPoiKey(poiData) {
+      return `${poiData.lat}${poiData.lng}`;
+    }
+
     map.setBigPois = bigPois => {
 
       if(bigPoisGroup) map.instance.removeObject(bigPoisGroup);
 
       bigPoisGroup = new H.map.Group();
       map.instance.addObject(bigPoisGroup);
+
+      let currentDestinationPoiKey = currentDestination && getPoiKey(currentDestination.getData());
 
       bigPoisGroup.addObjects(bigPois.map(poi => {
         let categoryInfo = config.categories[poi.category];
@@ -51,6 +59,8 @@
         }, {icon: icon});
 
         marker.setData({
+          lat: poi.position.lat,
+          lng: poi.position.lng,
           name: poi.name,
           categoryName: categoryInfo.name
         });
@@ -78,6 +88,12 @@
 
           ui.addBubble(bubble);
         });
+
+        let thisPoiKey = getPoiKey(poi);
+        if(currentDestination && thisPoiKey === currentDestinationPoiKey) {
+          console.log();
+          setFreeTimeFromPoi(poi);
+        }
 
         return marker;
       }));
@@ -162,14 +178,10 @@
         size: { w: 32, h: 42 }
       });
 
-      console.log(icon);
-      console.log(destination);
       let marker = new H.map.Marker({
         lat: destination.lat,
         lng: destination.lng
       }, {icon: icon});
-
-      console.log(marker);
 
       finalDestinationGroup.addObject(marker);
 
@@ -180,7 +192,7 @@
         <button 
           onClick="routing.setCurrentDestination(
             {lat:${pos.lat}, lng:${pos.lng}}
-          )">
+          ); map.setCurrentDestination(e.target)">
         Go to final destination
         </button>`;
 
@@ -197,6 +209,7 @@
       if(routeGroup) map.instance.removeObject(routeGroup);
 
       if(!route) {
+        currentDestination = null;
         // TODO zoom out
         return;
       }
@@ -213,10 +226,32 @@
       map.instance.addObject(routeGroup);
     };
 
-    function updateView() {
+    map.setCurrentDestination = dest => {
+      currentDestination = dest;
+    };
 
+    let bottomOverlay = document.getElementById('bottom-overlay');
+    let timeIndicator = document.getElementById('time-indicator');
+
+    function formatTimeFromMillis(millis) {
+      let seconds = millis / 1000;
+      let hours = seconds / 3600;
+      let minutes = (seconds % 3600) / 60;
+
+      let output = '';
+      if(hours) output += hours + ' hours, ';
+      output += minutes + ' minutes';
+      return output;
     }
 
+    function setFreeTimeFromPoi(poi) {
+      if(!poi) {
+        bottomOverlay.classList.add('hidden');
+      } else {
+        bottomOverlay.classList.remove('hidden');
+        timeIndicator.innerText = `${formatTimeFromMillis(poi.freeTime)} left at ${poi.name}`;
+      }
+    }
 
     map.setFollowCurrentLocation = doFollow => {
       followCurrentLocation = doFollow;

@@ -36,7 +36,7 @@
 
   config.styleConfig = {
     mainRouteStyle: {
-      strokeColor: 'blue',
+      strokeColor: '#116bbc',
       lineWidth: 5,
     },
     smallPoiMinZoom: 15
