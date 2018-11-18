@@ -4,9 +4,9 @@
 
     map.instance = new H.Map(
       document.getElementById('map'),
-      here.platform.createDefaultLayers().normal.map, {
+      here.platform.createDefaultLayers().terrain.map, {
         center: { lat: 50.05136, lng: 19.944761 },
-        zoom: 15,
+        zoom: 15
       },
     );
 
@@ -31,6 +31,26 @@
     let routeGroup = null;
 
     map.setBigPois = bigPois => {
+
+      if(bigPoisGroup) map.instance.removeObject(bigPoisGroup);
+
+      bigPoisGroup = new H.map.Group();
+      map.instance.addObject(bigPoisGroup);
+
+      bigPoisGroup.addObjects(bigPois.map(poi => {
+        let categoryInfo = config.categories[poi.category];
+        let icon = new H.map.Icon();
+        const marker = new H.map.DomMarker({
+          lat: poi.position[0],
+          lng: poi.position[1]
+        });
+
+        marker.setData({
+          name: categoryInfo.
+        });
+
+        return marker;
+      }));
 
     };
 
@@ -75,9 +95,19 @@
       finalDestinationGroup.addObject(marker);
 
       finalDestinationGroup.addEventListener('tap', e => {
+        let pos = e.target.getPosition();
+
+        let bubbleContent = `
+        <button 
+          onClick="routing.setCurrentDestination(
+            {lat:${pos.lat}, lng:${pos.lng}}
+          )">
+        Go to final destination
+        </button>`;
+
         let bubble = new H.ui.InfoBubble(
-          e.target.getCenter(), {
-            content: `<button>Go to final destination</button>`
+          pos, {
+            content: bubbleContent
           });
 
         ui.addBubble(bubble);

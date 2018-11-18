@@ -2,12 +2,36 @@
   const config = {};
   window.config = config;
 
+  config.categories = {
+    'snacks-fast-food': {
+      name: 'Snacks & Fast Food',
+      iconMain: 'img/big/food_b.svg'
+    },
+    'coffee-tea': {
+      name: 'Coffee & Tea',
+      iconMain: 'img/big/cafe_b.svg'
+    },
+    'natural-geographical': {
+      name: 'Outdoor Activities',
+      iconMain: 'img/big/museum_b.svg'
+    },
+    'leisure-outdoor': {
+      name: 'Outdoor Activities',
+      iconMain: 'img/big/green_b.svg'
+    },
+    'sights-museums': {
+      name: 'Museums',
+      iconMain: 'img/big/museum_b.svg'
+    }
+  };
+
+
   config.styleConfig = {
     mainRouteStyle: {
       strokeColor: 'blue',
       lineWidth: 5,
     }
-  }
+  };
 
   config.moveThreshold = 0.000023;
 
