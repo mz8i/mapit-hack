@@ -44,13 +44,13 @@
         });
 
         const marker = new H.map.DomMarker({
-          lat: poi.position[0],
-          lng: poi.position[1]
+          lat: poi.position.lat,
+          lng: poi.position.lng
         }, {icon: icon});
 
-        // marker.setData({
-        //   name: categoryInfo.
-        // });
+        marker.setData({
+          name: categoryInfo.name
+        });
 
         return marker;
       }));
