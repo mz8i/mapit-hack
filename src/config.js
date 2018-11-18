@@ -21,7 +21,7 @@
     },
     'natural-geographical': {
       name: 'Outdoor Activities',
-      iconMain: 'img/museum_b.svg'
+      iconMain: 'img/green_b.svg'
     },
     'leisure-outdoor': {
       name: 'Outdoor Activities',

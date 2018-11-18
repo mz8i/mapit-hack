@@ -82,3 +82,17 @@ html, body {
     height: 100vh;
 }
 
+
+#bottom-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+
+    min-height: 50px;
+    height: 50px;
+    background-color: white;
+    text-align: center;
+    line-height: 2em;
+}
