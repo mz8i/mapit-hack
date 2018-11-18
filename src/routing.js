@@ -3,6 +3,7 @@
     lastLocation: {
       lat: 0,
       lng: 0,
+      heading: 0
     },
   };
   window.routing = routing;

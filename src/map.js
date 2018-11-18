@@ -81,19 +81,60 @@
     };
 
     map.setSmallPois = smallPois => {
+      if (smallPoisGroup) map.instance.removeObject(smallPoisGroup);
 
+      smallPoisGroup = new H.map.Group({
+        min: config.styleConfig.smallPoinMinZoom
+      });
+      map.instance.addObject(smallPoisGroup);
+
+      smallPoisGroup.addObjects(smallPois.map(poi => {
+        let categoryInfo = config.categories[poi.category];
+        let icon = new H.map.DomIcon(categoryInfo.iconMain, {
+          size: { w: 32, h: 42 }
+        });
+
+        const marker = new H.map.DomMarker({
+          lat: poi.position.lat,
+          lng: poi.position.lng
+        }, { icon: icon });
+
+        marker.setData({
+          name: poi.name,
+          categoryName: categoryInfo.name
+        });
+
+        marker.addEventListener('tap', e => {
+          let pos = e.target.getPosition();
+          let data = e.target.getData();
+
+          let bubbleContent = `${data.name}
+          <br />
+          ${data.categoryName}`;
+
+          let bubble = new H.ui.InfoBubble(
+            pos, {
+              content: bubbleContent
+            });
+
+          ui.addBubble(bubble);
+        });
+
+        return marker;
+      }));
     };
 
     map.setCurrentLocation = currentLocation => {
       if(currentLocationGroup) {
         map.instance.removeObject(currentLocationGroup);
       }
+
+      let heading = currentLocation.heading || 0;
+      let svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:#db0b55;}</style></defs><title>Zasób 27</title><g transform="rotate(${heading} 12 12)"><path class="cls-1" d="M6.22,0,0,17.42s6.22-3.5,12.44,0L6.22,0"/></g></svg>`;
       
-      let svgMarkup = `<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="12" fill="red" />
-      </svg>`;
-      
-      let icon = new H.map.DomIcon(svgMarkup);
+      let icon = new H.map.DomIcon(svgMarkup, {
+        size: {w:96, h:126}
+      });
 
       currentLocationGroup = new H.map.DomMarker({
         lat: currentLocation.lat,
@@ -159,6 +200,10 @@
 
       map.instance.addObject(routeGroup);
     };
+
+    function updateView() {
+
+    }
 
 
     map.setFollowCurrentLocation = doFollow => {

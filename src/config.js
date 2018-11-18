@@ -30,7 +30,8 @@
     mainRouteStyle: {
       strokeColor: 'blue',
       lineWidth: 5,
-    }
+    },
+    smallPoiMinZoom: 15
   };
 
   config.moveThreshold = 5; // in meters
