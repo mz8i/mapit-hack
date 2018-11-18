@@ -1,18 +1,10 @@
-(function() {
+(function() { 
   const api = {};
   window.api = api;
-  
-  const platform = new H.service.Platform({
-    app_id: 'vWn2GmLBTbjKvOe4mhkK',
-    app_code: 'XPZlJTo8ofqOsjg0_-Ty9w',
-  });
-  
-  const geocoder = platform.getGeocodingService();
-  const router = platform.getRoutingService();
-  const explore = new H.places.Explore(platform.getPlacesService());
 
   api.geocode = searchText => new Promise((resolve, reject) => {
-    geocoder.geocode({
+    logEnabled && console.log(`geocoding "${searchText}"`);
+    here.geocoder.geocode({
       searchText,
     }, result => {
       const locations = result.Response.View[0].Result;
@@ -30,8 +22,8 @@
   });
 
   api.route = (startPosition, endPosition) => new Promise((resolve, reject) => {
-    console.log(`routing from [${startPosition.lat}, ${startPosition.lng}] to [${endPosition.lat}, ${endPosition.lng}]`);
-    router.calculateRoute({
+    logEnabled && console.log(`routing from [${startPosition.lat}, ${startPosition.lng}] to [${endPosition.lat}, ${endPosition.lng}]`);
+    here.router.calculateRoute({
       mode: 'fastest;pedestrian',
       waypoint0: `geo!${startPosition.lat},${startPosition.lng}`,
       waypoint1: `geo!${endPosition.lat},${endPosition.lng}`,
@@ -44,7 +36,8 @@
   });
 
   api.pois = (position, radius, categories) => new Promise((resolve, reject) => {
-    explore.request({
+    logEnabled && console.log(`looking for ${categories} POIs within ${radius} meters of [${position.lat}, ${position.lng}]`);
+    here.explore.request({
       in: `${position.lat},${position.lng};r=${radius}`,
       cat: categories,
     }, {
