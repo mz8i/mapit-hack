@@ -11,16 +11,80 @@
     );
 
     const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map.instance));
-    // const ui = window.ui = H.ui.UI.createDefault(map.instance, here.platform.createDefaultLayers());
+
+    const ui = window.ui = new H.ui.UI(map.instance);
 
     window.addEventListener('resize', function () {
       map.instance.getViewPort().resize();
     });
 
-    const addedToMap = [];
-
     let followCurrentLocation = false;
-    let currentLocation = null;
+
+    let bigPoisGroup = null;
+    let smallPoisGroup = null;
+    let currentLocationGroup = null;
+    let finalDestinationGroup = null;
+    let routeGroup = null;
+
+    map.setBigPois = bigPois => {
+
+    };
+
+    map.setSmallPois = smallPois => {
+
+    };
+
+    map.setCurrentLocation = currentLocation => {
+      if(currentLocationGroup) {
+        map.instance.removeObject(currentLocationGroup);
+      }
+      
+      let svgMarkup = `<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="12" fill="red" stroke="black" stroke-width="3" />
+      </svg>`;
+      
+      let icon = new H.map.DomIcon(svgMarkup);
+
+      currentLocationGroup = new H.map.DomMarker({
+        lat: currentLocation.lat,
+        lng: currentLocation.lng
+      }, {
+        icon: icon
+      });
+      
+      map.instance.addObject(currentLocationGroup);
+    };
+
+    map.setFinalDestination  = destination => {
+
+      if(finalDestinationGroup) map.instance.removeObject(finalDestinationGroup);
+
+      finalDestinationGroup = new H.map.Group();
+
+      map.instance.addObject(finalDestinationGroup);
+
+      let marker = new H.map.Marker({
+        lat: destination.lat,
+        lng: destination.lng
+      });
+
+      finalDestinationGroup.addObject(marker);
+
+      finalDestinationGroup.addEventListener('tap', e => {
+        let bubble = new H.ui.InfoBubble(
+          e.target.getCenter(), {
+            content: `<button>Go to final destination</button>`
+          });
+
+        ui.addBubble(bubble);
+      });
+    };
+
+    map.setRoute = route => {
+
+    };
+
+
 
     map.setFollowCurrentLocation = doFollow => {
       followCurrentLocation = doFollow;
@@ -80,7 +144,7 @@
       });
 
       map.instance.addObject(line);
-      addedToMap.push(line);
+      // addedToMap.push(line);
     };
 
     map.addPoisAlongRoute = (route, radius, categories) => {

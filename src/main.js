@@ -29,17 +29,7 @@
             hide(destinationInput);
             show(timeInputContainer);
 
-            // TODO set view to both target and current positions
-            map.instance.setCenter({
-                lat: finalDestination.lat,
-                lng: finalDestination.lng
-            });
-
-            // TODO add interactivity and proper visuals to marker
-            map.instance.addObject(new H.map.Marker({
-                lat: finalDestination.lat,
-                lng: finalDestination.lng
-            }));
+            map.setFinalDestination(finalDestination);
         }
     }
 
@@ -108,7 +98,7 @@
 
     watchPosition(position => {
         console.log(position);
-        map.updateCurrentLocation({
+        map.setCurrentLocation({
             lat: position.coords.latitude,
             lng: position.coords.longitude
         });
