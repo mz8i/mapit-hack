@@ -44,7 +44,7 @@
       }
       
       let svgMarkup = `<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="12" fill="red" stroke="black" stroke-width="3" />
+      <circle cx="12" cy="12" r="12" fill="red" />
       </svg>`;
       
       let icon = new H.map.DomIcon(svgMarkup);
@@ -85,9 +85,24 @@
     };
 
     map.setRoute = route => {
+      if(routeGroup) map.instance.removeObject(routeGroup);
 
+      if(!route) {
+        // TODO zoom out
+        return;
+      }
+
+      let linestring = new H.geo.LineString();
+      route.forEach(point => {
+        linestring.pushLatLngAlt(point.lat, point.lng);
+      });
+
+      routeGroup = new H.map.Polyline(linestring, {
+        style: config.styleConfig.mainRouteStyle,
+      });
+
+      map.instance.addObject(routeGroup);
     };
-
 
 
     map.setFollowCurrentLocation = doFollow => {
