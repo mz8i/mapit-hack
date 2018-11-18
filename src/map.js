@@ -35,7 +35,8 @@
     let currentDestinationPoiKey = null;
 
     function getPoiKey(poiData) {
-      return `${poiData.lat}${poiData.lng}`;
+      if (!poiData) return '';
+      return `${poiData.position.lat}${poiData.position.lng}`;
     }
 
     map.setBigPois = bigPois => {
@@ -187,7 +188,7 @@
       finalDestinationGroup.addObject(marker);
 
       console.log(destination);
-      let thisPoiKey = getPoiKey(destination);
+      let thisPoiKey = getPoiKey({position: destination});
 
       finalDestinationGroup.addEventListener('tap', e => {
         let pos = e.target.getPosition();
@@ -246,9 +247,13 @@
     let timeIndicator = document.getElementById('time-indicator');
 
     function formatTimeFromMillis(millis) {
-      let seconds = millis / 1000;
-      let hours = seconds / 3600;
-      let minutes = (seconds % 3600) / 60;
+      const seconds = millis / 1000;
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+
+      // let seconds = millis / 1000;
+      // let hours = seconds / 3600;
+      // let minutes = (seconds % 3600) / 60;
 
       let output = '';
       if(hours) output += hours + ' hours, ';

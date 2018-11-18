@@ -1,6 +1,6 @@
 (function() {
   const routing = {
-    currentTime: new Date().getMilliseconds(),
+    currentTime: new Date().getTime(),
     lastLocation: {
       lat: 0,
       lng: 0,
@@ -39,7 +39,7 @@
   }
 
   routing.setArrivalTime = time => {
-    logger.log(`ROUTING|setting arrival time to ${time.getTime()}`);
+    logger.log(`ROUTING|setting arrival time to ${time} (${time.getTime()})`);
     routing.arrivalTime = time.getTime();
 
     (async function() {
@@ -106,7 +106,7 @@
           const routeToTarget = await api.route(bigPoi.position, destination);
           const alternativeTime = routeTime(routeToBigPoi) + routeTime(routeToTarget);
           routing.bigPois[i].detourTime = (alternativeTime - originalTimeToDestination) * 1000;
-          routing.bigPois[i].freeTime = ((routing.arrivalTime - routing.currentTime) - alternativeTime) * 1000;
+          routing.bigPois[i].freeTime = ((routing.arrivalTime - routing.currentTime) - alternativeTime * 1000);
         }
         map.setBigPois(routing.bigPois);
       }
@@ -164,10 +164,11 @@
         for (let i = 0 ; i < routing.bigPois.length ; i++) {
           const bigPoi = routing.bigPois[i];
           const routeToBigPoi = await api.route(routing.lastLocation, bigPoi.position);
-          const routeToTarget = await api.route(bigPoi.position, destination);
+          const routeToTarget = await api.route(bigPoi.position, routing.finalDestination);
           const alternativeTime = routeTime(routeToBigPoi) + routeTime(routeToTarget);
           routing.bigPois[i].detourTime = (alternativeTime - originalTimeToDestination) * 1000;
-          routing.bigPois[i].freeTime = ((routing.arrivalTime - routing.currentTime) - alternativeTime) * 1000;
+          routing.bigPois[i].freeTime = ((routing.arrivalTime - routing.currentTime) - alternativeTime * 1000);
+          logger.log(`POI: ${bigPoi.name}`, 'CURRENT', new Date(routing.currentTime), 'ARRIVAL', new Date(routing.arrivalTime), 'FREE TIME', routing.arrivalTime - routing.currentTime, 'ALTERNATIVE TIME', alternativeTime);
         }
         map.setBigPois(routing.bigPois);
       }
