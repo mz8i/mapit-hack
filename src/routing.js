@@ -39,8 +39,8 @@
   }
 
   routing.setArrivalTime = time => {
-    logger.log(`ROUTING|setting arrival time to ${time}`);
-    routing.arrivalTime = time;
+    logger.log(`ROUTING|setting arrival time to ${time.getTime()}`);
+    routing.arrivalTime = time.getTime();
 
     (async function() {
       const route = await api.route(routing.lastLocation, routing.finalDestination);
@@ -106,6 +106,7 @@
           const routeToTarget = await api.route(bigPoi.position, destination);
           const alternativeTime = routeTime(routeToBigPoi) + routeTime(routeToTarget);
           routing.bigPois[i].detourTime = (alternativeTime - originalTimeToDestination) * 1000;
+          routing.bigPois[i].freeTime = ((routing.arrivalTime - routing.currentTime) - alternativeTime) * 1000;
         }
         map.setBigPois(routing.bigPois);
       }
@@ -159,6 +160,7 @@
           const routeToTarget = await api.route(bigPoi.position, destination);
           const alternativeTime = routeTime(routeToBigPoi) + routeTime(routeToTarget);
           routing.bigPois[i].detourTime = (alternativeTime - originalTimeToDestination) * 1000;
+          routing.bigPois[i].freeTime = ((routing.arrivalTime - routing.currentTime) - alternativeTime) * 1000;
         }
         map.setBigPois(routing.bigPois);
       }
