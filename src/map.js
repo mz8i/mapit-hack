@@ -54,6 +54,8 @@
         });
 
         marker.addEventListener('tap', e => {
+          if(e.originalEvent.button !== 0) return;
+          
           let pos = e.target.getPosition();
           let data = e.target.getData();
 
@@ -64,7 +66,7 @@
           onClick="routing.setCurrentDestination(
             {lat:${pos.lat}, lng:${pos.lng}}
           )">
-        Go to final destination
+        Go to ${data.name}
         </button>`;
 
           let bubble = new H.ui.InfoBubble(
