@@ -1,6 +1,6 @@
 (function() {
   const routing = {
-    currentTime: 0,
+    currentTime: new Date().getMilliseconds(),
     lastLocation: {
       lat: 0,
       lng: 0,
@@ -9,6 +9,7 @@
     currentDestination: null,
     finalDestination: null,
     arrivalTime: null,
+    bigPois: [],
   };
   window.routing = routing;
 
@@ -91,7 +92,25 @@
       }));
 
       logger.log(`ROUTING|setting big pois`, parsedBigPois);
-      map.setBigPois(parsedBigPois);
+      routing.bigPois.splice(0, routing.bigPois.length);
+      routing.bigPois.push(...parsedBigPois);
+
+      if (routing.lastLocation && (routing.currentDestination || routing.finalDestination)) {
+        const destination = routing.currentDestination || routing.finalDestination;
+        const routeToDestination = await api.route(routing.lastLocation, destination);
+        const originalTimeToDestination = routeTime(routeToDestination);
+
+        for (let i = 0 ; i < routing.bigPois.length ; i++) {
+          const bigPoi = routing.bigPois[i];
+          const routeToBigPoi = await api.route(routing.lastLocation, bigPoi.position);
+          const routeToTarget = await api.route(bigPoi.position, destination);
+          const alternativeTime = routeTime(routeToBigPoi) + routeTime(routeToTarget);
+          routing.bigPois[i].detourTime = (alternativeTime - originalTimeToDestination) * 1000;
+        }
+        map.setBigPois(routing.bigPois);
+      }
+
+      // map.setBigPois(parsedBigPois);
     })();
   }
 
@@ -116,8 +135,8 @@
     logger.log(`ROUTING|moved to [${position.lat}, ${position.lng}]`);
     map.setCurrentLocation(position);
 
-    if (routing.lastLocation && routing.currentDestination) {
-      (async function() {
+    (async function() {
+      if (routing.lastLocation && routing.currentDestination) {
         const route = await api.route(routing.lastLocation, routing.currentDestination);
         logger.log(`ROUTING|routed [${routing.lastLocation.lat}, ${routing.lastLocation.lng}] to [${routing.lastLocation.lat}, ${routing.lastLocation.lng}]`, route);
         map.setRoute(route.shape.map(point => {
@@ -127,8 +146,27 @@
             lng: position[1],
           };
         }));
-      })();
-    }
+      }
+
+      if (routing.lastLocation && (routing.currentDestination || routing.finalDestination)) {
+        const destination = routing.currentDestination || routing.finalDestination;
+        const routeToDestination = await api.route(routing.lastLocation, destination);
+        const originalTimeToDestination = routeTime(routeToDestination);
+
+        for (let i = 0 ; i < routing.bigPois.length ; i++) {
+          const bigPoi = routing.bigPois[i];
+          const routeToBigPoi = await api.route(routing.lastLocation, bigPoi.position);
+          const routeToTarget = await api.route(bigPoi.position, destination);
+          const alternativeTime = routeTime(routeToBigPoi) + routeTime(routeToTarget);
+          routing.bigPois[i].detourTime = (alternativeTime - originalTimeToDestination) * 1000;
+        }
+        map.setBigPois(routing.bigPois);
+      }
+    })();
+  }
+
+  function routeTime(route) {
+    return route.leg[0].maneuver.reduce((prev, current) => prev + current.travelTime, 0);
   }
 
   function distanceInMeters(position1, position2) {
