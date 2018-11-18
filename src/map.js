@@ -246,7 +246,7 @@
     map.addPois = pois => {
       const group = new H.map.Group();
       map.instance.addObject(group);
-      addedToMap.push(group);
+      // addedToMap.push(group);
 
       group.addObjects(pois.map(poi => {
         const marker = new H.map.Marker({
