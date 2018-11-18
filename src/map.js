@@ -10,6 +10,10 @@
       },
     );
 
+    map.instance.addEventListener('tap', function (evt) {
+      routing.onCurrentLocationChange(map.instance.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY));
+    });
+
     const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map.instance));
 
     const ui = window.ui = new H.ui.UI(map.instance);
@@ -140,7 +144,7 @@
       });
 
       const line = new H.map.Polyline(linestring, {
-        style: styleConfig.mainRouteStyle,
+        style: config.styleConfig.mainRouteStyle,
       });
 
       map.instance.addObject(line);
