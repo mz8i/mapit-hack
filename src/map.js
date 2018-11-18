@@ -11,7 +11,9 @@
     );
 
     map.instance.addEventListener('tap', function (evt) {
-      routing.onCurrentLocationChange(map.instance.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY));
+      if (evt.originalEvent.button === 2) {
+        routing.onCurrentLocationChange(map.instance.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY));
+      }
     });
 
     const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map.instance));

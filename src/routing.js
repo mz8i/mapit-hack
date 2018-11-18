@@ -6,6 +6,7 @@
       lng: 0,
       heading: 0
     },
+    currentDestination: null,
     finalDestination: null,
     arrivalTime: null,
   };
@@ -17,6 +18,25 @@
     map.setFinalDestination(position);
   };
 
+  routing.setCurrentDestination = position => {
+    logger.log(`ROUTING|setting current destination to [${position.lat}, ${position.lng}]`);
+    routing.currentDestination = position;
+    
+    if (routing.lastLocation && routing.currentDestination) {
+      (async function() {
+        const route = await api.route(routing.lastLocation, routing.currentDestination);
+        logger.log(`ROUTING|routed [${routing.lastLocation.lat}, ${routing.lastLocation.lng}] to [${routing.lastLocation.lat}, ${routing.lastLocation.lng}]`, route);
+        map.setRoute(route.shape.map(point => {
+          const position = point.split(',');
+          return {
+            lat: position[0],
+            lng: position[1],
+          };
+        }));
+      })();
+    }
+  }
+
   routing.setArrivalTime = time => {
     logger.log(`ROUTING|setting arrival time to ${time}`);
     routing.arrivalTime = time;
@@ -24,13 +44,14 @@
     (async function() {
       const route = await api.route(routing.lastLocation, routing.finalDestination);
       logger.log(`ROUTING|routed [${routing.lastLocation.lat}, ${routing.lastLocation.lng}] to [${routing.lastLocation.lat}, ${routing.lastLocation.lng}]`, route);
-      map.setRoute(route.shape.map(point => {
-        const position = point.split(',');
-        return {
-          lat: position[0],
-          lng: position[1],
-        };
-      }));
+      // // we do not want to display route to final destination
+      // map.setRoute(route.shape.map(point => {
+      //   const position = point.split(',');
+      //   return {
+      //     lat: position[0],
+      //     lng: position[1],
+      //   };
+      // }));
 
       const indexSegmentsLength = route.shape.length / (config.bigPoiSegments + 1);
       const bigPois = [];
@@ -44,14 +65,14 @@
           lng: position[1],
         };
         
-        const pois = await api.pois(midpoint, 500, 'sights-museums,natural-geographical');
+        const pois = await api.pois(midpoint, 500, config.allowedCategories.join(','));
         logger.log(`ROUTING|searched for big pois near [${midpoint.lat}, ${midpoint.lng}]`, pois);
         const filteredPois = pois.filter(poi =>
           (bigPoisPositions.indexOf(poi.position[0] + poi.position[1]) === -1) &&
           (config.allowedCategories.indexOf(poi.category.id) > -1));
         
         let addedPois = 0;
-        while ((addedPois < 2) && (addedPois < filteredPois.length)) {
+        while ((addedPois < 20) && (addedPois < filteredPois.length)) {
           bigPois.push(filteredPois[addedPois]);
           bigPoisPositions.push(filteredPois[addedPois].position[0] + filteredPois[addedPois].position[1]);
           addedPois += 1;
@@ -94,6 +115,20 @@
   function onMoved(position) {
     logger.log(`ROUTING|moved to [${position.lat}, ${position.lng}]`);
     map.setCurrentLocation(position);
+
+    if (routing.lastLocation && routing.currentDestination) {
+      (async function() {
+        const route = await api.route(routing.lastLocation, routing.currentDestination);
+        logger.log(`ROUTING|routed [${routing.lastLocation.lat}, ${routing.lastLocation.lng}] to [${routing.lastLocation.lat}, ${routing.lastLocation.lng}]`, route);
+        map.setRoute(route.shape.map(point => {
+          const position = point.split(',');
+          return {
+            lat: position[0],
+            lng: position[1],
+          };
+        }));
+      })();
+    }
   }
 
   function distanceInMeters(position1, position2) {
