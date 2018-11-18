@@ -43,7 +43,7 @@
           size: { w: 32, h: 42 }
         });
 
-        const marker = new H.map.DomMarker({
+        const marker = new H.map.Marker({
           lat: poi.position.lat,
           lng: poi.position.lng
         }, {icon: icon});
