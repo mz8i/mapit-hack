@@ -39,6 +39,7 @@
     }
 
     map.setBigPois = bigPois => {
+      logger.log(`MAP|set big poi`, bigPois);
 
       if(bigPoisGroup) map.instance.removeObject(bigPoisGroup);
 
