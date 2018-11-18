@@ -19,6 +19,31 @@
 
     const addedToMap = [];
 
+    let followCurrentLocation = false;
+    let currentLocation = null;
+
+    map.setFollowCurrentLocation = doFollow => {
+      followCurrentLocation = doFollow;
+      // TODO update location here?
+    };
+
+    map.doesFollowCurrentLocation = () => followCurrentLocation;
+
+    map.updateCurrentLocation = location => {
+      currentLocation = location;
+
+      if (followCurrentLocation) {
+        map.instance.setCenter({
+          lat: location.lat,
+          lng: location.lng
+        }, true);
+      }
+    };
+
+    map.zoomOutToPositionAndDestination = () => {
+      // TODO
+    };
+
     map.clear = () => {
       map.instance.removeObjects(addedToMap);
       addedToMap.splice(0, addedToMap.length);
@@ -51,10 +76,7 @@
       });
 
       const line = new H.map.Polyline(linestring, {
-        style: {
-          strokeColor: 'blue',
-          lineWidth: 5,
-        },
+        style: styleConfig.mainRouteStyle,
       });
 
       map.instance.addObject(line);

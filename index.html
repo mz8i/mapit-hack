@@ -23,14 +23,16 @@
 </head>
 <body>
     <div id="container">
-        <div id="destination">
-            <input id="destination-input" type="text" placeholder="Where do you want to go?">
-            <div class="js-time-picker hidden">05:12</div>
-        </div>
-        <div id="main">
-            <div id="map">
-
+        <div class="top-overlay">
+            <input id="destination-input" type="text" placeholder="Where do you want to go?" value="Gronostajowa 7 Kraków">
+            <div id="time-input-container" class="hidden">
+                <div id="time-question">When do you want to arrive there?</div>
+                <div id="time-input" class="js-time-picker"></div> <button id="go-btn">Go!</button>
             </div>
+        </div>
+        
+        <div id="main">
+            <div id="map"></div>
         </div>
     </div>
 
@@ -38,11 +40,9 @@
     <script src="src/config.js"></script>
 
     <script src="src/currentPosition.js"></script>
-    <!-- <script src="src/currentTime.js"></script> -->
-
-
+    <script src="src/currentTime.js"></script>
     <!-- <script src="src/fakeCurrentPosition.js"></script> -->
-    <script src="src/fakeCurrentTime.js"></script>
+    <!-- <script src="src/fakeCurrentTime.js"></script> -->
 
     <script src="src/here.js"></script>
     <script src="src/api.js"></script>
@@ -51,11 +51,6 @@
     <script src="src/main.js"></script>
 
     <script>
-        watchTime(console.log);
-        // watchPosition(console.log, console.error, {});
-
-        setFakeTime(10000);
-
         (async function() {
             let tomasza = await api.geocode('tomasza 20, kraków');
             let grodzka = await api.geocode('grodzka 20, kraków');
@@ -67,7 +62,7 @@
             console.log(`Tomasza 20 latlng`, tomasza, `Grodzka 20 latlng`, grodzka, 'Route Tomasza 20 - Grodzka 20', routeTomaszaGrodzka, 'eat-drink withing 200m of Tomasza 20', eatDrinkNearTomasza);
             
             map.addPoisAlongRoute(routeTomaszaGrodzka, 200, 'eat-drink');
-        })();        
+        })();
 
         setTimeout(() => {
           map.clear();
