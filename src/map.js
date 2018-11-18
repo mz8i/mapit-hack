@@ -76,7 +76,7 @@
       });
 
       const line = new H.map.Polyline(linestring, {
-        style: styleConfig.mainRouteStyle,
+        style: config.styleConfig.mainRouteStyle,
       });
 
       map.instance.addObject(line);

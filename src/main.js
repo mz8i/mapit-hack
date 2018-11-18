@@ -106,12 +106,14 @@
         if (!arrivalTime) updateTimePicker(time);
     });
 
-    watchPosition(position => {
-        console.log(position);
-        map.updateCurrentLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+    if (config.trackingEnabled) {
+        watchPosition(position => {
+            console.log(position);
+            map.updateCurrentLocation({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            });
         });
-    });
+    }
 
 })();
