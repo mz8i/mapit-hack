@@ -12,10 +12,18 @@
 
     const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map.instance));
     const ui = window.ui = H.ui.UI.createDefault(map.instance, here.platform.createDefaultLayers());
+    
+    const addedToMap = [];
+
+    map.clear = () => {
+      map.instance.removeObjects(addedToMap);
+      addedToMap.splice(0, addedToMap.length);
+    }
 
     map.addPois = pois => {
       const group = new H.map.Group();
       map.instance.addObject(group);
+      addedToMap.push(group);
 
       group.addObjects(pois.map(poi => {
         const marker = new H.map.Marker({
@@ -46,6 +54,7 @@
       });
 
       map.instance.addObject(line);
+      addedToMap.push(line);
     };
 
     map.addPoisAlongRoute = (route, radius, categories) => {
@@ -57,21 +66,30 @@
         };
       });
       
-      const pois = [];
+      const group = new H.map.Group();
+      map.instance.addObject(group);
+      addedToMap.push(group);
+
       const poisPositions = [];
 
       (async function() {
         for (let i = 0 ; i < midpoints.length ;i++) {
           const midpois = await api.pois(midpoints[i], radius, categories);
-          midpois.forEach(midpoi => {
-            const positionString = midpoi.position[0] + midpoi.position[1];
-            if (poisPositions.indexOf(positionString) === -1) {
-              pois.push(midpoi);
-              poisPositions.push(positionString);
-            }
-          });
+          const newMidpois = midpois.filter(midpoi =>
+            poisPositions.indexOf(midpoi.position[0] + midpoi.position[1]) === -1);
+          group.addObjects(newMidpois.map(poi => {
+            const marker = new H.map.Marker({
+              lat: poi.position[0],
+              lng: poi.position[1]
+            });
+    
+            marker.setData({
+              title: poi.title,
+            });
+    
+            return marker;
+          }));
         }
-        map.addPois(pois);
       })();
     }
 })();
