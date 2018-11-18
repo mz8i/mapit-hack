@@ -43,7 +43,7 @@
     }, {
       // intentionally empty 
     }, result => {
-      resolve(result);
+      resolve(result.results.items);
     }, error => {
       reject(error);
     })
