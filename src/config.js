@@ -45,6 +45,7 @@
   config.moveThreshold = 5; // in meters
   config.velocity = 1; // in meters per second
   config.bigPoiSegments = 3;
+  config.routeEndThreshold = 15; // in meters
 
   config.logEnabled = localStorage.getItem('log-enabled') === "true" || false;
   config.enableLog = () => localStorage.setItem('log-enabled', true);
