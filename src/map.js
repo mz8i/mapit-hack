@@ -39,15 +39,18 @@
 
       bigPoisGroup.addObjects(bigPois.map(poi => {
         let categoryInfo = config.categories[poi.category];
-        let icon = new H.map.Icon();
+        let icon = new H.map.Icon(categoryInfo.iconMain, {
+          size: { w: 32, h: 42 }
+        });
+
         const marker = new H.map.DomMarker({
           lat: poi.position[0],
           lng: poi.position[1]
-        });
+        }, {icon: icon});
 
-        marker.setData({
-          name: categoryInfo.
-        });
+        // marker.setData({
+        //   name: categoryInfo.
+        // });
 
         return marker;
       }));
