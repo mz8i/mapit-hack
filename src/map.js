@@ -212,6 +212,7 @@
 
       if(!route) {
         currentDestination = null;
+        routeGroup = null;
         // TODO zoom out
         return;
       }

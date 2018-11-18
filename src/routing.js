@@ -140,13 +140,20 @@
       if (routing.lastLocation && routing.currentDestination) {
         const route = await api.route(routing.lastLocation, routing.currentDestination);
         logger.log(`ROUTING|routed [${routing.lastLocation.lat}, ${routing.lastLocation.lng}] to [${routing.lastLocation.lat}, ${routing.lastLocation.lng}]`, route);
-        map.setRoute(route.shape.map(point => {
-          const position = point.split(',');
-          return {
-            lat: position[0],
-            lng: position[1],
-          };
-        }));
+        
+        const distance = distanceInMeters(routing.lastLocation, routing.currentDestination);
+        if (distance > config.routeEndThreshold) {
+          map.setRoute(route.shape.map(point => {
+            const position = point.split(',');
+            return {
+              lat: position[0],
+              lng: position[1],
+            };
+          }));
+        } else {
+          routing.currentDestination = null;
+          map.setRoute(null);
+        }
       }
 
       if (routing.lastLocation && (routing.currentDestination || routing.finalDestination)) {
