@@ -32,7 +32,7 @@
     let finalDestinationGroup = null;
     let routeGroup = null;
 
-    let currentDestination = null;
+    let currentDestinationPoiKey = null;
 
     function getPoiKey(poiData) {
       return `${poiData.lat}${poiData.lng}`;
@@ -44,8 +44,6 @@
 
       bigPoisGroup = new H.map.Group();
       map.instance.addObject(bigPoisGroup);
-
-      let currentDestinationPoiKey = currentDestination && getPoiKey(currentDestination.getData());
 
       bigPoisGroup.addObjects(bigPois.map(poi => {
         let categoryInfo = config.categories[poi.category];
@@ -65,6 +63,8 @@
           categoryName: categoryInfo.name
         });
 
+        let thisPoiKey = getPoiKey(poi);
+
         marker.addEventListener('tap', e => {
           if(e.originalEvent.button !== 0) return;
           
@@ -77,7 +77,7 @@
         <button 
           onClick="routing.setCurrentDestination(
             {lat:${pos.lat}, lng:${pos.lng}}
-          )">
+          );  map.setCurrentDestinationPoiKey('${thisPoiKey}')">
         Go to ${data.name}
         </button>`;
 
@@ -89,9 +89,8 @@
           ui.addBubble(bubble);
         });
 
-        let thisPoiKey = getPoiKey(poi);
-        if(currentDestination && thisPoiKey === currentDestinationPoiKey) {
-          console.log();
+        if(currentDestinationPoiKey && thisPoiKey === currentDestinationPoiKey) {
+          console.log(currentDestinationPoiKey);
           setFreeTimeFromPoi(poi);
         }
 
@@ -185,6 +184,8 @@
 
       finalDestinationGroup.addObject(marker);
 
+      let thisPoiKey = getPoiKey(destination);
+
       finalDestinationGroup.addEventListener('tap', e => {
         let pos = e.target.getPosition();
 
@@ -192,7 +193,7 @@
         <button 
           onClick="routing.setCurrentDestination(
             {lat:${pos.lat}, lng:${pos.lng}}
-          ); map.setCurrentDestination(e.target)">
+          ); map.setCurrentDestination('${thisPoiKey}')">
         Go to final destination
         </button>`;
 
@@ -226,11 +227,18 @@
       map.instance.addObject(routeGroup);
     };
 
-    map.setCurrentDestination = dest => {
+    let bottomOverlay = document.getElementById('bottom-overlay');
+
+    map.setCurrentDestinationPoiKey = dest => {
       currentDestination = dest;
+
+      if(currentDestination) {
+        bottomOverlay.classList.remove('hidden');
+      } else { 
+        bottomOverlay.classList.add('hidden');
+      }
     };
 
-    let bottomOverlay = document.getElementById('bottom-overlay');
     let timeIndicator = document.getElementById('time-indicator');
 
     function formatTimeFromMillis(millis) {
@@ -245,10 +253,7 @@
     }
 
     function setFreeTimeFromPoi(poi) {
-      if(!poi) {
-        bottomOverlay.classList.add('hidden');
-      } else {
-        bottomOverlay.classList.remove('hidden');
+      if(poi) {
         timeIndicator.innerText = `${formatTimeFromMillis(poi.freeTime)} left at ${poi.name}`;
       }
     }
