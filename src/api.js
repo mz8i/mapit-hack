@@ -29,7 +29,7 @@
       waypoint1: `geo!${endPosition.lat},${endPosition.lng}`,
       representation: 'display',
     }, result => {
-      resolve(result);
+      resolve(result.response.route[0]);
     }, error => {
       reject(error);
     });
