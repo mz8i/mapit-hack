@@ -101,7 +101,8 @@
             console.log(position);
             map.updateCurrentLocation({
                 lat: position.coords.latitude,
-                lng: position.coords.longitude
+                lng: position.coords.longitude,
+                heading: position.coords.heading || 0
             });
         });
     }

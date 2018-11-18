@@ -90,11 +90,11 @@
 
       smallPoisGroup.addObjects(smallPois.map(poi => {
         let categoryInfo = config.categories[poi.category];
-        let icon = new H.map.DomIcon(categoryInfo.iconMain, {
+        let icon = new H.map.Icon(categoryInfo.iconMain, {
           size: { w: 32, h: 42 }
         });
 
-        const marker = new H.map.DomMarker({
+        const marker = new H.map.Marker({
           lat: poi.position.lat,
           lng: poi.position.lng
         }, { icon: icon });
@@ -154,10 +154,18 @@
 
       map.instance.addObject(finalDestinationGroup);
 
+      let icon = new H.map.Icon('img/end.svg', {
+        size: { w: 32, h: 42 }
+      });
+
+      console.log(icon);
+      console.log(destination);
       let marker = new H.map.Marker({
         lat: destination.lat,
         lng: destination.lng
-      });
+      }, {icon: icon});
+
+      console.log(marker);
 
       finalDestinationGroup.addObject(marker);
 
