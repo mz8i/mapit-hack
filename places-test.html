@@ -15,6 +15,16 @@
   <link rel="stylesheet" type="text/css" href="http://js.api.here.com/v3/3.0/mapsjs-ui.css" />
 </head>
 <body>
+  <script type="text/javascript" charset="utf-8">
+    (async function() {
+      let tomasza = await api.geocode('tomasza 20, kraków');
+      let grodzka = await api.geocode('grodzka 20, kraków');
+      const routeTomaszaGrodzka = await api.route(tomasza, grodzka);
+      const eatDrinkNearTomasza = await api.pois(tomasza, 200, 'eat-drink');
+      console.log(`Tomasza 20 latlng`, tomasza, `Grodzka 20 latlng`, grodzka, 'Route Tomasza 20 - Grodzka 20', routeTomaszaGrodzka, 'eat-drink withing 200m of Tomasza 20', eatDrinkNearTomasza);
+    })();
+  </script>
+
   <div id="map" style="width: 640px; height: 480px" />
   <!-- <input type='text'> -->
   <script type="text/javascript" charset="utf-8">
