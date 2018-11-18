@@ -20,6 +20,16 @@
 </head>
 <body>
 
+    <div id="destination-prompt">
+        <h1>Where do you want to go?</h1>
+        <input id="destination-address" type="text">
+        <h1>When do you need to get there?</h1>
+        <input id="destination-time" type="time" required>
+        <p>
+            <button id="go-btn" onClick="document.getElementById('destination-prompt').className +=' hidden'">Go!</button>
+        </p>
+    </div>
+
     <div id="container">
         <div id="main">
             <div id="map">
@@ -32,6 +42,10 @@
     <script src="src/config.js"></script>
 
     <script src="src/currentPosition.js"></script>
+    <!-- <script src="src/currentTime.js"></script> -->
+
+
+    <!-- <script src="src/fakeCurrentPosition.js"></script> -->
     <script src="src/fakeCurrentTime.js"></script>
 
     <script src="src/here.js"></script>
