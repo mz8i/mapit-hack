@@ -90,6 +90,7 @@
           ui.addBubble(bubble);
         });
 
+        console.log(currentDestinationPoiKey, thisPoiKey);
         if(currentDestinationPoiKey && thisPoiKey === currentDestinationPoiKey) {
           console.log(currentDestinationPoiKey);
           setFreeTimeFromPoi(poi);
@@ -185,6 +186,7 @@
 
       finalDestinationGroup.addObject(marker);
 
+      console.log(destination);
       let thisPoiKey = getPoiKey(destination);
 
       finalDestinationGroup.addEventListener('tap', e => {
@@ -194,7 +196,7 @@
         <button 
           onClick="routing.setCurrentDestination(
             {lat:${pos.lat}, lng:${pos.lng}}
-          ); map.setCurrentDestination('${thisPoiKey}')">
+          ); map.setCurrentDestinationPoiKey('${thisPoiKey}')">
         Go to final destination
         </button>`;
 
@@ -212,6 +214,7 @@
 
       if(!route) {
         currentDestination = null;
+        routeGroup = null;
         // TODO zoom out
         return;
       }
@@ -231,9 +234,9 @@
     let bottomOverlay = document.getElementById('bottom-overlay');
 
     map.setCurrentDestinationPoiKey = dest => {
-      currentDestination = dest;
+      currentDestinationPoiKey = dest;
 
-      if(currentDestination) {
+      if (currentDestinationPoiKey) {
         bottomOverlay.classList.remove('hidden');
       } else { 
         bottomOverlay.classList.add('hidden');
