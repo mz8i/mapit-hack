@@ -17,20 +17,16 @@
 
 <link rel="stylesheet" type="text/css" href="http://js.api.here.com/v3/3.0/mapsjs-ui.css" />
 
+<link href="lib/picker/picker.min.css" rel="stylesheet">
+<script src="lib/picker/picker.min.js"></script>
+
 </head>
 <body>
-
-    <div id="destination-prompt">
-        <h1>Where do you want to go?</h1>
-        <input id="destination-address" type="text">
-        <h1>When do you need to get there?</h1>
-        <input id="destination-time" type="time" required>
-        <p>
-            <button id="go-btn" onClick="document.getElementById('destination-prompt').className +=' hidden'">Go!</button>
-        </p>
-    </div>
-
     <div id="container">
+        <div id="destination">
+            <input id="destination-input" type="text" placeholder="Where do you want to go?">
+            <div class="js-time-picker hidden">05:12</div>
+        </div>
         <div id="main">
             <div id="map">
 
@@ -52,9 +48,11 @@
     <script src="src/api.js"></script>
     <script src="src/map.js"></script>
 
+    <script src="src/main.js"></script>
+
     <script>
         watchTime(console.log);
-        watchPosition(console.log, console.error, {});
+        // watchPosition(console.log, console.error, {});
 
         setFakeTime(10000);
 

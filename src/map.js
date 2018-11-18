@@ -11,7 +11,8 @@
     );
 
     const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map.instance));
-    const ui = window.ui = H.ui.UI.createDefault(map.instance, here.platform.createDefaultLayers());
+    // const ui = window.ui = H.ui.UI.createDefault(map.instance, here.platform.createDefaultLayers());
+
     window.addEventListener('resize', function () {
       map.instance.getViewPort().resize();
     });
