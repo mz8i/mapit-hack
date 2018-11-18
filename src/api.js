@@ -3,7 +3,7 @@
   window.api = api;
 
   api.geocode = searchText => new Promise((resolve, reject) => {
-    logger.log(`geocoding "${searchText}"`);
+    logger.log(`API|geocoding "${searchText}"`);
     here.geocoder.geocode({
       searchText,
     }, result => {
@@ -22,7 +22,7 @@
   });
 
   api.route = (startPosition, endPosition) => new Promise((resolve, reject) => {
-    logger.log(`routing from [${startPosition.lat}, ${startPosition.lng}] to [${endPosition.lat}, ${endPosition.lng}]`);
+    logger.log(`API|routing from [${startPosition.lat}, ${startPosition.lng}] to [${endPosition.lat}, ${endPosition.lng}]`);
     here.router.calculateRoute({
       mode: 'fastest;pedestrian',
       waypoint0: `geo!${startPosition.lat},${startPosition.lng}`,
@@ -36,7 +36,7 @@
   });
 
   api.pois = (position, radius, categories) => new Promise((resolve, reject) => {
-    logger.log(`looking for ${categories} POIs within ${radius} meters of [${position.lat}, ${position.lng}]`);
+    logger.log(`API|looking for ${categories} POIs within ${radius} meters of [${position.lat}, ${position.lng}]`);
     here.explore.request({
       in: `${position.lat},${position.lng};r=${radius}`,
       cat: categories,
