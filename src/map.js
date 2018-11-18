@@ -49,7 +49,30 @@
         }, {icon: icon});
 
         marker.setData({
-          name: categoryInfo.name
+          name: poi.name,
+          categoryName: categoryInfo.name
+        });
+
+        marker.addEventListener('tap', e => {
+          let pos = e.target.getPosition();
+          let data = e.target.getData();
+
+          let bubbleContent = `${data.name}
+          <br />
+          ${data.categoryName}
+        <button 
+          onClick="routing.setCurrentDestination(
+            {lat:${pos.lat}, lng:${pos.lng}}
+          )">
+        Go to final destination
+        </button>`;
+
+          let bubble = new H.ui.InfoBubble(
+            pos, {
+              content: bubbleContent
+            });
+
+          ui.addBubble(bubble);
         });
 
         return marker;
