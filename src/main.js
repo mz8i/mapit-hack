@@ -29,7 +29,7 @@
             hide(destinationInput);
             show(timeInputContainer);
 
-            map.setFinalDestination(finalDestination);
+            routing.setFinalDestination(finalDestination);
         }
     }
 
