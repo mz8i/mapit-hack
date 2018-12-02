@@ -76,36 +76,19 @@
         map.setFollowCurrentLocation(true);
         routing.setArrivalTime(arrivalTime);
     }
-
-    // cancelling current destination
-
-    // let cancelButton = document.getElementById('cancel-destination-btn');
-
-    // function cancelCurrentDestination() {
-    //     currentDestination = null;
-
-    //     hide(cancelButton);
-    // }
-
-    // cancelButton.addEventListener('click', e => {
-    //     cancelCurrentDestination();
-    // });
-
-
+    
     watchTime(time => {
         currentTime = time;
-        if (!arrivalTime) updateTimePicker(time);
+        console.log({time});
+        if (!arrivalTime) updateTimePicker(time)
+        else routing.onCurrentTimeChange(time);
     });
 
-    if (config.trackingEnabled) {
-        watchPosition(position => {
-            console.log(position);
-            map.updateCurrentLocation({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-                heading: position.coords.heading || 0
-            });
-        });
-    }
+    watchPosition(position => {
+        console.log({position});
+        map.setCurrentLocation(position);
+        routing.onCurrentLocationChange(position);
+
+    });
 
 })();

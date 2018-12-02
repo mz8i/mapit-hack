@@ -42,36 +42,25 @@
 
     <script src="src/config.js"></script>
     <script src="src/logger.js"></script>
+    <script src="src/util.js"></script>
 
-    <script src="src/currentPosition.js"></script>
-    <script src="src/currentTime.js"></script>
-    <!-- <script src="src/fakeCurrentPosition.js"></script> -->
-    <!-- <script src="src/fakeCurrentTime.js"></script> -->
+    <!-- <script src="src/currentPosition.js"></script> -->
+    <!-- <script src="src/currentTime.js"></script> -->
+    <script src="src/fakeCurrentPosition.js"></script>
+    <script src="src/fakeCurrentTime.js"></script>
 
     <script src="src/here.js"></script>
     <script src="src/api.js"></script>
     <script src="src/map.js"></script>
     <script src="src/routing.js"></script>
+    <script>
+        // set up fake time and position
+        followTrueTime(false);
+        initFakePositionMapClick(map);
+        setShiftTimeWhenMoving(true);
+    </script>
 
     <script src="src/main.js"></script>
 
-    <!-- <script>
-        (async function() {
-            let tomasza = await api.geocode('pawia 29, kraków');
-            let grodzka = await api.geocode('grodzka 20, kraków');
-            
-            const routeTomaszaGrodzka = await api.route(tomasza, grodzka);
-            map.addRoute(routeTomaszaGrodzka);
-            
-            const eatDrinkNearTomasza = await api.pois(tomasza, 200, 'eat-drink');
-            console.log(`Tomasza 20 latlng`, tomasza, `Grodzka 20 latlng`, grodzka, 'Route Tomasza 20 - Grodzka 20', routeTomaszaGrodzka, 'eat-drink withing 200m of Tomasza 20', eatDrinkNearTomasza);
-            
-            map.addPoisAlongRoute(routeTomaszaGrodzka, 200, 'eat-drink');
-        })();
-
-        setTimeout(() => {
-        //   map.clear();
-        }, 5000);
-    </script> -->
 
 </body>

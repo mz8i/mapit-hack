@@ -10,12 +10,6 @@
       },
     );
 
-    map.instance.addEventListener('tap', function (evt) {
-      if (evt.originalEvent.button === 2) {
-        routing.onCurrentLocationChange(map.instance.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY));
-      }
-    });
-
     const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map.instance));
 
     const ui = window.ui = new H.ui.UI(map.instance);
@@ -36,11 +30,11 @@
 
     function getPoiKey(poiData) {
       if (!poiData) return '';
-      return `${poiData.position.lat}${poiData.position.lng}`;
+      return `${poiData.position.lat},${poiData.position.lng}`;
     }
 
     map.setBigPois = bigPois => {
-      logger.log(`MAP|set big poi`, bigPois);
+      // logger.log(`MAP|set big poi`, bigPois);
 
       if(bigPoisGroup) map.instance.removeObject(bigPoisGroup);
 
@@ -91,9 +85,9 @@
           ui.addBubble(bubble);
         });
 
-        console.log(currentDestinationPoiKey, thisPoiKey);
+        // console.log(currentDestinationPoiKey, thisPoiKey);
         if(currentDestinationPoiKey && thisPoiKey === currentDestinationPoiKey) {
-          console.log(currentDestinationPoiKey);
+          // console.log(currentDestinationPoiKey);
           setFreeTimeFromPoi(poi);
         }
 
@@ -187,7 +181,7 @@
 
       finalDestinationGroup.addObject(marker);
 
-      console.log(destination);
+      // console.log(destination);
       let thisPoiKey = getPoiKey({position: destination});
 
       finalDestinationGroup.addEventListener('tap', e => {
@@ -250,10 +244,6 @@
       const seconds = millis / 1000;
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
-
-      // let seconds = millis / 1000;
-      // let hours = seconds / 3600;
-      // let minutes = (seconds % 3600) / 60;
 
       let output = '';
       if(hours) output += hours + ' hours, ';
