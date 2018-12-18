@@ -1,0 +1,17 @@
+1. Czego brakuje do demo?
+- fix wszystkich błędów
+  - problem z obsługą czasu na początku
+  - problem z obsługą powiadomienia (pasek nazwy i czasu po osiągnięciu celu pośredniego)
+  - problem z szybkością ładowania
+  - orientacja obecnej pozycji
+  - update czasu nie powinien przerysowywać mapy
+
+- lepsza grafika
+  - popupy
+  - paski (menu)
+
+2. Czego brakuje długodystansowo?
+- round trip
+- lepsza grafika
+- działanie na telefonie
+- ekran startowy / rodo / etc.
